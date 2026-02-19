@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JalSeva — API Credentials Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #F0F4F8;
+  --surface:  #FFFFFF;
+  --nav-bg:   #0D2137;
+  --border:   #D6E0EC;
+  --text:     #1A2535;
+  --muted:    #5A7188;
+  --mono:     'IBM Plex Mono', monospace;
+  --sans:     'IBM Plex Sans', sans-serif;
+
+  /* Role colors */
+  --panchayat: #0369A1;   --panchayat-bg: #E0F2FE;
+  --block:     #0F766E;   --block-bg:     #CCFBF1;
+  --mandal:    #059669;   --mandal-bg:    #D1FAE5;
+  --district:  #7C3AED;   --district-bg:  #EDE9FE;
+  --state:     #B45309;   --state-bg:     #FEF3C7;
+  --validator: #DC2626;   --validator-bg: #FEE2E2;
+  --ngo:       #1D4ED8;   --ngo-bg:       #DBEAFE;
+  --admin:     #374151;   --admin-bg:     #F3F4F6;
+
+  /* Method colors */
+  --post: #15803D; --post-bg: #F0FDF4;
+  --get:  #1D4ED8; --get-bg:  #EFF6FF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── LEFT SIDEBAR NAV ── */
+.sidebar {
+  width: 240px;
+  background: var(--nav-bg);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+  padding-bottom: 40px;
+  flex-shrink: 0;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.sidebar-logo-name {
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+.sidebar-logo-name span { color: #38BDF8; }
+.sidebar-logo-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.sidebar-section-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  padding: 20px 20px 8px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  text-decoration: none;
+  transition: background 0.15s;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+.sidebar-item:hover { background: rgba(255,255,255,0.07); }
+.sidebar-item.active {
+  background: rgba(56,189,248,0.12);
+  border-left-color: #38BDF8;
+}
+.sidebar-item-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sidebar-item-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  line-height: 1;
+}
+.sidebar-item-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  line-height: 1;
+}
+
+/* ── MAIN CONTENT ── */
+.main {
+  margin-left: 240px;
+  flex: 1;
+  padding: 40px 48px;
+  max-width: calc(100vw - 240px);
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid var(--border);
+}
+.page-header h1 {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.page-header p {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+/* ── INFO BANNER ── */
+.info-banner {
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-left: 4px solid #1D4ED8;
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+  font-size: 13px;
+  color: #1E3A5F;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+.info-banner strong { color: #1D4ED8; }
+
+/* ── ROLE SECTION ── */
+.role-section {
+  margin-bottom: 64px;
+  scroll-margin-top: 32px;
+}
+
+.role-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+  border-radius: 12px 12px 0 0;
+  margin-bottom: 0;
+}
+.role-emoji { font-size: 26px; }
+.role-header-text {}
+.role-header-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+.role-header-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.9);
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.role-header-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 3px;
+}
+
+.role-body {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0 0 12px 12px;
+  padding: 28px 28px;
+}
+
+.scenario-box {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-left: 4px solid #D97706;
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: #78350F;
+  line-height: 1.7;
+}
+.scenario-box strong { color: #B45309; }
+
+/* ── PHASE BLOCK ── */
+.phase {
+  margin-bottom: 28px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.phase-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+.phase-number {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  flex-shrink: 0;
+}
+.phase-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+.phase-method-badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.badge-POST { background: var(--post-bg); color: var(--post); }
+.badge-GET  { background: var(--get-bg);  color: var(--get); }
+
+.phase-body { padding: 0; }
+
+/* ── ENDPOINT LABEL ── */
+.endpoint-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: #F8FAFC;
+  border-bottom: 1px solid var(--border);
+}
+.endpoint-method {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.method-POST { background: var(--post-bg); color: var(--post); }
+.method-GET  { background: var(--get-bg);  color: var(--get); }
+.endpoint-path {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: #1E293B;
+}
+.endpoint-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: auto;
+  font-style: italic;
+}
+
+/* ── CODE BLOCK ── */
+.code-wrap {
+  position: relative;
+  background: #0F1724;
+  padding: 0;
+}
+.code-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  padding: 8px 16px 0;
+}
+pre {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.75;
+  padding: 10px 16px 16px;
+  overflow-x: auto;
+  margin: 0;
+}
+pre::-webkit-scrollbar { height: 4px; }
+pre::-webkit-scrollbar-track { background: transparent; }
+pre::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+.copy-btn {
+  position: absolute;
+  top: 8px; right: 10px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6);
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.copy-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+.copy-btn.copied { background: #15803D; color: #fff; border-color: #15803D; }
+
+/* JSON syntax */
+.jk { color: #79C0FF; } /* key */
+.jv { color: #A5D6FF; } /* string value */
+.jn { color: #F78166; } /* number */
+.jb { color: #FF7B72; } /* bool/null */
+.jp { color: #8B949E; } /* punctuation */
+.jc { color: #6E7681; font-style: italic; } /* comment */
+
+/* Form-data style */
+.fd-key  { color: #79C0FF; }
+.fd-val  { color: #A5D6FF; }
+.fd-sep  { color: #6E7681; }
+
+/* ── NOTE BOXES ── */
+.note { padding: 10px 16px; font-size: 13px; line-height: 1.6; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+.note-info    { background: #EFF6FF; color: #1E3A8A; }
+.note-success { background: #F0FDF4; color: #14532D; }
+.note-warning { background: #FFFBEB; color: #78350F; }
+.note-danger  { background: #FEF2F2; color: #7F1D1D; }
+.note-icon    { flex-shrink: 0; font-size: 14px; }
+
+/* ── QUICK REF TABLE ── */
+.quick-ref {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 48px;
+}
+.quick-ref th {
+  background: var(--nav-bg);
+  color: rgba(255,255,255,0.8);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 500;
+}
+.quick-ref td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.quick-ref tr:nth-child(even) td { background: #F8FAFC; }
+.quick-ref tr:hover td { background: #EFF6FF; }
+.quick-ref .qm { font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 2px 7px; border-radius: 3px; }
+.quick-ref .qpath { font-family: var(--mono); font-size: 12px; color: #1E293B; }
+.quick-ref .qroles { font-size: 12px; color: var(--muted); }
+.quick-ref .qdesc { font-size: 13px; color: var(--text); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .sidebar { width: 200px; }
+  .main { margin-left: 200px; padding: 24px 20px; max-width: calc(100vw - 200px); }
+}
+@media (max-width: 640px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; max-width: 100vw; }
+}
+
+/* ── DIVIDER ── */
+hr.section-div {
+  border: none;
+  border-top: 2px dashed var(--border);
+  margin: 48px 0;
+}
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-name">💧 Jal<span>Seva</span></div>
+    <div class="sidebar-logo-sub">API Credentials &amp; Request Reference</div>
+  </div>
+
+  <div class="sidebar-section-label">All Roles</div>
+  <a class="sidebar-item active" href="#panchayat">
+    <div class="sidebar-item-dot" style="background:#0369A1"></div>
+    <div><div class="sidebar-item-label">Panchayat</div><div class="sidebar-item-sub">Village reporter</div></div>
+  </a>
+  <a class="sidebar-item" href="#block">
+    <div class="sidebar-item-dot" style="background:#0F766E"></div>
+    <div><div class="sidebar-item-label">Block Officer</div><div class="sidebar-item-sub">Low/Medium alerts</div></div>
+  </a>
+  <a class="sidebar-item" href="#mandal">
+    <div class="sidebar-item-dot" style="background:#059669"></div>
+    <div><div class="sidebar-item-label">Mandal Officer</div><div class="sidebar-item-sub">Medium escalations</div></div>
+  </a>
+  <a class="sidebar-item" href="#district">
+    <div class="sidebar-item-dot" style="background:#7C3AED"></div>
+    <div><div class="sidebar-item-label">District Officer</div><div class="sidebar-item-sub">High severity</div></div>
+  </a>
+  <a class="sidebar-item" href="#state">
+    <div class="sidebar-item-dot" style="background:#B45309"></div>
+    <div><div class="sidebar-item-label">State Officer</div><div class="sidebar-item-sub">Critical + State</div></div>
+  </a>
+  <a class="sidebar-item" href="#validator">
+    <div class="sidebar-item-dot" style="background:#DC2626"></div>
+    <div><div class="sidebar-item-label">Validator</div><div class="sidebar-item-sub">Closes alerts</div></div>
+  </a>
+  <a class="sidebar-item" href="#ngo">
+    <div class="sidebar-item-dot" style="background:#1D4ED8"></div>
+    <div><div class="sidebar-item-label">NGO</div><div class="sidebar-item-sub">Community reporter</div></div>
+  </a>
+  <a class="sidebar-item" href="#admin">
+    <div class="sidebar-item-dot" style="background:#374151"></div>
+    <div><div class="sidebar-item-label">Admin</div><div class="sidebar-item-sub">Full access</div></div>
+  </a>
+
+  <div class="sidebar-section-label">Reference</div>
+  <a class="sidebar-item" href="#quickref">
+    <div class="sidebar-item-dot" style="background:#6B7280"></div>
+    <div><div class="sidebar-item-label">All Endpoints</div><div class="sidebar-item-sub">Quick reference</div></div>
+  </a>
+</nav>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <div class="page-header">
+    <h1>💧 JalSeva — API Sample Credentials</h1>
+    <p>Copy-paste ready credentials and request bodies for every user role and every API phase. Covers Register → Login → All endpoints per role.</p>
+  </div>
+
+  <div class="info-banner">
+    <strong>How to use:</strong> (1) Register the user → (2) Login via <code>/api/v1/auth/token</code> → (3) In Swagger UI click the <strong>🔒 Authorize</strong> button, enter username + password → (4) Execute any endpoint with the token auto-attached. Replace <code>PASTE-ALERT-ID-HERE</code> with the <code>id</code> UUID from the alert creation response.
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       ROLE 1: PANCHAYAT
+  ════════════════════════════════════════════════════════ -->
+  <div class="role-section" id="panchayat">
+    <div class="role-header" style="background: linear-gradient(135deg, #0369A1, #0284C7);">
+      <div class="role-emoji">🏘️</div>
+      <div class="role-header-text">
+        <div class="role-header-name">Panchayat User <span class="role-header-badge">PANCHAYAT</span></div>
+        <div class="role-header-desc">Village-level reporter — submits water scarcity alerts on behalf of the community</div>
+      </div>
+    </div>
+    <div class="role-body">
+      <div class="scenario-box">
+        <strong>Scenario:</strong> Sarpanch Lakshmi Devi, Kothapalli Village, Warangal — 450 households have no water for 5 days after two borewells went dry. She registers, logs in, submits the alert, then tracks the timeline.
+      </div>
+
+      <!-- Phase 1: Register -->
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-number" style="background:#0369A1">1</div>
+          <div class="phase-title">Register</div>
+          <span class="phase-method-badge badge-POST">POST</span>
+        </div>
+        <div class="phase-body">
+          <div class="endpoint-row">
+            <span class="endpoint-method method-POST">POST</span>
+            <span class="endpoint-path">/api/v1/auth/register</span>
+          </div>
+          <div class="code-wrap">
+            <div class="code-label">Request Body — JSON</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"email"</span><span class="jp">:</span>        <span class="jv">"lakshmi@kothapalli.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"password"</span><span class="jp">:</span>     <span class="jv">"password123"</span><span class="jp">,</span>
+  <span class="jk">"full_name"</span><span class="jp">:</span>    <span class="jv">"Sarpanch Lakshmi Devi"</span><span class="jp">,</span>
+  <span class="jk">"role"</span><span class="jp">:</span>         <span class="jv">"PANCHAYAT"</span><span class="jp">,</span>
+  <span class="jk">"organization"</span><span class="jp">:</span> <span class="jv">"Kothapalli Gram Panchayat"</span><span class="jp">,</span>
+  <span class="jk">"panchayat"</span><span class="jp">:</span>    <span class="jv">"Kothapalli"</span><span class="jp">,</span>
+  <span class="jk">"district"</span><span class="jp">:</span>     <span class="jv">"Warangal"</span><span class="jp">,</span>
+  <span class="jk">"state"</span><span class="jp">:</span>        <span class="jv">"Telangana"</span><span class="jp">,</span>
+  <span class="jk">"phone"</span><span class="jp">:</span>        <span class="jv">"+91-9876543210"</span>
+<span class="jp">}</span></pre>
+          </div>
+          <div class="note note-success"><span class="note-icon">✓</span>Expected: HTTP 201. Save the <code>id</code> field (UUID) — it is your user ID.</div>
+        </div>
+      </div>
+
+      <!-- Phase 2: Login -->
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-number" style="background:#0369A1">2</div>
+          <div class="phase-title">Authorize / Login</div>
+          <span class="phase-method-badge badge-POST">POST</span>
+        </div>
+        <div class="phase-body">
+          <div class="endpoint-row">
+            <span class="endpoint-method method-POST">POST</span>
+            <span class="endpoint-path">/api/v1/auth/token</span>
+            <span class="endpoint-note">Send as form-data, not JSON</span>
+          </div>
+          <div class="code-wrap">
+            <div class="code-label">Form-Data Fields</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">username</span> <span class="fd-sep">:</span> <span class="fd-val">lakshmi@kothapalli.gov.in</span>
+<span class="fd-key">password</span> <span class="fd-sep">:</span> <span class="fd-val">password123</span></pre>
+          </div>
+          <div class="note note-warning"><span class="note-icon">⚠</span>In Swagger UI: click <strong>🔒 Authorize</strong> at the top of the page. Enter username and password. Click Authorize. The token is now attached to all requests automatically.</div>
+        </div>
+      </div>
+
+      <!-- Phase 3: Submit Alert -->
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-number" style="background:#0369A1">3</div>
+          <div class="phase-title">Submit Water Scarcity Alert</div>
+          <span class="phase-method-badge badge-POST">POST</span>
+        </div>
+        <div class="phase-body">
+          <div class="endpoint-row">
+            <span class="endpoint-method method-POST">POST</span>
+            <span class="endpoint-path">/api/v1/alerts/</span>
+            <span class="endpoint-note">High severity — 450 households</span>
+          </div>
+          <div class="code-wrap">
+            <div class="code-label">Request Body — JSON</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"panchayat"</span><span class="jp">:</span>           <span class="jv">"Kothapalli"</span><span class="jp">,</span>
+  <span class="jk">"block"</span><span class="jp">:</span>               <span class="jv">"Narsampet"</span><span class="jp">,</span>
+  <span class="jk">"mandal"</span><span class="jp">:</span>              <span class="jv">"Narsampet"</span><span class="jp">,</span>
+  <span class="jk">"district"</span><span class="jp">:</span>            <span class="jv">"Warangal"</span><span class="jp">,</span>
+  <span class="jk">"state"</span><span class="jp">:</span>               <span class="jv">"Telangana"</span><span class="jp">,</span>
+  <span class="jk">"lat"</span><span class="jp">:</span>                 <span class="jn">17.9284</span><span class="jp">,</span>
+  <span class="jk">"lng"</span><span class="jp">:</span>                 <span class="jn">79.8945</span><span class="jp">,</span>
+  <span class="jk">"severity"</span><span class="jp">:</span>            <span class="jv">"High"</span><span class="jp">,</span>
+  <span class="jk">"description"</span><span class="jp">:</span>         <span class="jv">"Groundwater levels in community wells have dropped by 3 meters. Two of five borewells are now dry. 450 households have been without reliable water supply for 5 days."</span><span class="jp">,</span>
+  <span class="jk">"households_affected"</span><span class="jp">:</span>  <span class="jn">450</span><span class="jp">,</span>
+  <span class="jk">"water_source_type"</span><span class="jp">:</span>    <span class="jv">"borewell"</span><span class="jp">,</span>
+  <span class="jk">"primary_concern"</span><span class="jp">:</span>      <span class="jv">"scarcity"</span><span class="jp">,</span>
+  <span class="jk">"reporter_name"</span><span class="jp">:</span>        <span class="jv">"Sarpanch Lakshmi Devi"</span><span class="jp">,</span>
+  <span class="jk">"reporter_email"</span><span class="jp">:</span>       <span class="jv">"lakshmi@kothapalli.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"reporter_org"</span><span class="jp">:</span>         <span class="jv">"Kothapalli Gram Panchayat"</span>
+<span class="jp">}</span></pre>
+          </div>
+          <div class="note note-info"><span class="note-icon">ℹ</span>Response includes <code>id</code> (UUID), <code>alert_code</code>, <code>ml_risk_score</code>, <code>assigned_to</code>, <code>sla_hours</code>. <strong>Save the <code>id</code> — needed for all following calls.</strong></div>
+        </div>
+      </div>
+
+      <!-- Phase 4: View Timeline -->
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-number" style="background:#0369A1">4</div>
+          <div class="phase-title">View Alert Timeline (Audit Trail)</div>
+          <span class="phase-method-badge badge-GET">GET</span>
+        </div>
+        <div class="phase-body">
+          <div class="endpoint-row">
+            <span class="endpoint-method method-GET">GET</span>
+            <span class="endpoint-path">/api/v1/alerts/{alert_id}/timeline</span>
+          </div>
+          <div class="code-wrap">
+            <div class="code-label">URL Parameter</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">alert_id</span> <span class="fd-sep">:</span> <span class="fd-val">PASTE-ALERT-ID-HERE</span>   <span class="jc"># UUID from Step 3 response</span></pre>
+          </div>
+          <div class="note note-info"><span class="note-icon">ℹ</span>Returns every state change — who did what, when, from which status to which status. Immutable.</div>
+        </div>
+      </div>
+
+      <!-- Phase 5: List Alerts -->
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-number" style="background:#0369A1">5</div>
+          <div class="phase-title">List All Alerts</div>
+          <span class="phase-method-badge badge-GET">GET</span>
+        </div>
+        <div class="phase-body">
+          <div class="endpoint-row">
+            <span class="endpoint-method method-GET">GET</span>
+            <span class="endpoint-path">/api/v1/alerts/</span>
+            <span class="endpoint-note">Optional filters as query params</span>
+          </div>
+          <div class="code-wrap">
+            <div class="code-label">Query Parameters (all optional)</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">district</span>   <span class="fd-sep">:</span> <span class="fd-val">Warangal</span>
+<span class="fd-key">severity</span>   <span class="fd-sep">:</span> <span class="fd-val">High</span>
+<span class="fd-key">status</span>     <span class="fd-sep">:</span> <span class="fd-val">CREATED</span>
+<span class="fd-key">page</span>       <span class="fd-sep">:</span> <span class="fd-val">1</span>
+<span class="fd-key">page_size</span>  <span class="fd-sep">:</span> <span class="fd-val">10</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-div">
+
+  <!-- ════════════════════════════════════════════════════════
+       ROLE 2: BLOCK OFFICER
+  ════════════════════════════════════════════════════════ -->
+  <div class="role-section" id="block">
+    <div class="role-header" style="background: linear-gradient(135deg, #0F766E, #0D9488);">
+      <div class="role-emoji">🏢</div>
+      <div class="role-header-text">
+        <div class="role-header-name">Block Development Officer <span class="role-header-badge">BLOCK_OFFICER</span></div>
+        <div class="role-header-desc">Responds to Low and Medium severity alerts — submits actions and resolution claims</div>
+      </div>
+    </div>
+    <div class="role-body">
+      <div class="scenario-box">
+        <strong>Scenario:</strong> Suresh Yadav, BDO Narsampet Block, Warangal — assigned a Low severity alert. He dispatches a tanker, then later submits a resolution claim once the issue is fixed.
+      </div>
+
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-number" style="background:#0F766E">1</div>
+          <div class="phase-title">Register</div>
+          <span class="phase-method-badge badge-POST">POST</span>
+        </div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/register</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"email"</span><span class="jp">:</span>        <span class="jv">"suresh.yadav@narsampet-bdo.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"password"</span><span class="jp">:</span>     <span class="jv">"password123"</span><span class="jp">,</span>
+  <span class="jk">"full_name"</span><span class="jp">:</span>    <span class="jv">"Suresh Yadav"</span><span class="jp">,</span>
+  <span class="jk">"role"</span><span class="jp">:</span>         <span class="jv">"BLOCK_OFFICER"</span><span class="jp">,</span>
+  <span class="jk">"organization"</span><span class="jp">:</span> <span class="jv">"Block Development Office, Narsampet"</span><span class="jp">,</span>
+  <span class="jk">"district"</span><span class="jp">:</span>     <span class="jv">"Warangal"</span><span class="jp">,</span>
+  <span class="jk">"state"</span><span class="jp">:</span>        <span class="jv">"Telangana"</span><span class="jp">,</span>
+  <span class="jk">"phone"</span><span class="jp">:</span>        <span class="jv">"+91-9845001234"</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-number" style="background:#0F766E">2</div>
+          <div class="phase-title">Authorize / Login</div>
+          <span class="phase-method-badge badge-POST">POST</span>
+        </div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/token</span><span class="endpoint-note">form-data</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">username</span> <span class="fd-sep">:</span> <span class="fd-val">suresh.yadav@narsampet-bdo.gov.in</span>
+<span class="fd-key">password</span> <span class="fd-sep">:</span> <span class="fd-val">password123</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-number" style="background:#0F766E">3</div>
+          <div class="phase-title">Submit Action (Not a Resolution)</div>
+          <span class="phase-method-badge badge-POST">POST</span>
+        </div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/actions</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span>            <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"actor_name"</span><span class="jp">:</span>          <span class="jv">"Suresh Yadav"</span><span class="jp">,</span>
+  <span class="jk">"actor_organization"</span><span class="jp">:</span>   <span class="jv">"Block Development Office, Narsampet"</span><span class="jp">,</span>
+  <span class="jk">"actor_email"</span><span class="jp">:</span>          <span class="jv">"suresh.yadav@narsampet-bdo.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"action_type"</span><span class="jp">:</span>          <span class="jv">"tanker_dispatch"</span><span class="jp">,</span>
+  <span class="jk">"description"</span><span class="jp">:</span>          <span class="jv">"Dispatched one 5,000L water tanker to Reddygudem. Tanker supplying daily at 7am. Contacted state water board for borewell inspection team."</span><span class="jp">,</span>
+  <span class="jk">"resources_deployed"</span><span class="jp">:</span>   <span class="jv">"1 water tanker (5,000L), 1 BDO field officer"</span><span class="jp">,</span>
+  <span class="jk">"is_resolution_claim"</span><span class="jp">:</span>  <span class="jb">false</span>
+<span class="jp">}</span></pre>
+          </div>
+          <div class="note note-info"><span class="note-icon">ℹ</span><code>is_resolution_claim: false</code> → alert moves to <code>ACTION_SUBMITTED</code>. Alert stays open. No NLI contradiction check triggered.</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header">
+          <div class="phase-number" style="background:#0F766E">4</div>
+          <div class="phase-title">Submit Resolution Claim (Problem Fixed)</div>
+          <span class="phase-method-badge badge-POST">POST</span>
+        </div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/actions</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span>            <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"actor_name"</span><span class="jp">:</span>          <span class="jv">"Suresh Yadav"</span><span class="jp">,</span>
+  <span class="jk">"actor_organization"</span><span class="jp">:</span>   <span class="jv">"Block Development Office, Narsampet"</span><span class="jp">,</span>
+  <span class="jk">"actor_email"</span><span class="jp">:</span>          <span class="jv">"suresh.yadav@narsampet-bdo.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"action_type"</span><span class="jp">:</span>          <span class="jv">"well_restoration"</span><span class="jp">,</span>
+  <span class="jk">"description"</span><span class="jp">:</span>          <span class="jv">"Open well desilted and cleaned on March 5. Water level returned to seasonal norm. 15 households confirm afternoon flow restored. Issue was seasonal silt buildup, not infrastructure failure."</span><span class="jp">,</span>
+  <span class="jk">"resources_deployed"</span><span class="jp">:</span>   <span class="jv">"1 desilting crew, 2 days labour"</span><span class="jp">,</span>
+  <span class="jk">"is_resolution_claim"</span><span class="jp">:</span>  <span class="jb">true</span>
+<span class="jp">}</span></pre>
+          </div>
+          <div class="note note-warning"><span class="note-icon">⚠</span><code>is_resolution_claim: true</code> → NLI model checks claim against original description. Alert moves to <code>PENDING_VERIFICATION</code>. A VALIDATOR must physically visit before the alert can close.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-div">
+
+  <!-- ════════════════════════════════════════════════════════
+       ROLE 3: MANDAL OFFICER
+  ════════════════════════════════════════════════════════ -->
+  <div class="role-section" id="mandal">
+    <div class="role-header" style="background: linear-gradient(135deg, #047857, #059669);">
+      <div class="role-emoji">🏛️</div>
+      <div class="role-header-text">
+        <div class="role-header-name">Mandal Revenue Officer <span class="role-header-badge">MANDAL_OFFICER</span></div>
+        <div class="role-header-desc">Handles Medium severity alerts — coordinates across panchayats, escalates to District when needed</div>
+      </div>
+    </div>
+    <div class="role-body">
+      <div class="scenario-box">
+        <strong>Scenario:</strong> Kavitha Reddy, MRO Narsampet — receives escalation for a Medium alert. Conducts a joint survey with BDO, determines geological cause, escalates to District RWSD.
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#059669">1</div><div class="phase-title">Register</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/register</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"email"</span><span class="jp">:</span>        <span class="jv">"kavitha.reddy@narsampet-mro.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"password"</span><span class="jp">:</span>     <span class="jv">"password123"</span><span class="jp">,</span>
+  <span class="jk">"full_name"</span><span class="jp">:</span>    <span class="jv">"Kavitha Reddy"</span><span class="jp">,</span>
+  <span class="jk">"role"</span><span class="jp">:</span>         <span class="jv">"MANDAL_OFFICER"</span><span class="jp">,</span>
+  <span class="jk">"organization"</span><span class="jp">:</span> <span class="jv">"Mandal Revenue Office, Narsampet"</span><span class="jp">,</span>
+  <span class="jk">"district"</span><span class="jp">:</span>     <span class="jv">"Warangal"</span><span class="jp">,</span>
+  <span class="jk">"state"</span><span class="jp">:</span>        <span class="jv">"Telangana"</span><span class="jp">,</span>
+  <span class="jk">"phone"</span><span class="jp">:</span>        <span class="jv">"+91-9833002345"</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#059669">2</div><div class="phase-title">Authorize / Login</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/token</span><span class="endpoint-note">form-data</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">username</span> <span class="fd-sep">:</span> <span class="fd-val">kavitha.reddy@narsampet-mro.gov.in</span>
+<span class="fd-key">password</span> <span class="fd-sep">:</span> <span class="fd-val">password123</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#059669">3</div><div class="phase-title">Submit Field Survey Action</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/actions</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span>            <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"actor_name"</span><span class="jp">:</span>          <span class="jv">"Kavitha Reddy"</span><span class="jp">,</span>
+  <span class="jk">"actor_organization"</span><span class="jp">:</span>   <span class="jv">"Mandal Revenue Office, Narsampet"</span><span class="jp">,</span>
+  <span class="jk">"actor_email"</span><span class="jp">:</span>          <span class="jv">"kavitha.reddy@narsampet-mro.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"action_type"</span><span class="jp">:</span>          <span class="jv">"field_survey"</span><span class="jp">,</span>
+  <span class="jk">"description"</span><span class="jp">:</span>          <span class="jv">"Joint field survey with BDO on April 3. 3 borewells at 40% capacity. Geological depletion confirmed — not infrastructure failure. Recommending District borewell deepening programme."</span><span class="jp">,</span>
+  <span class="jk">"resources_deployed"</span><span class="jp">:</span>   <span class="jv">"1 MRO field team, GPS survey equipment"</span><span class="jp">,</span>
+  <span class="jk">"is_resolution_claim"</span><span class="jp">:</span>  <span class="jb">false</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#059669">4</div><div class="phase-title">Escalate to District</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/escalate</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span> <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"to_level"</span><span class="jp">:</span> <span class="jv">"DISTRICT"</span><span class="jp">,</span>
+  <span class="jk">"reason"</span><span class="jp">:</span>   <span class="jv">"Geological groundwater depletion confirmed. Borewell deepening required — beyond mandal budget. Requesting District RWSD intervention."</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#059669">5</div><div class="phase-title">View Escalation History</div><span class="phase-method-badge badge-GET">GET</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-GET">GET</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/escalations</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">alert_id</span> <span class="fd-sep">:</span> <span class="fd-val">PASTE-ALERT-ID-HERE</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-div">
+
+  <!-- ════════════════════════════════════════════════════════
+       ROLE 4: DISTRICT OFFICER
+  ════════════════════════════════════════════════════════ -->
+  <div class="role-section" id="district">
+    <div class="role-header" style="background: linear-gradient(135deg, #5B21B6, #7C3AED);">
+      <div class="role-emoji">🏗️</div>
+      <div class="role-header-text">
+        <div class="role-header-name">District Rural Water Supply Officer <span class="role-header-badge">DISTRICT_OFFICER</span></div>
+        <div class="role-header-desc">Primary responder for High severity alerts — deploys contractors, uploads evidence, escalates to State</div>
+      </div>
+    </div>
+    <div class="role-body">
+      <div class="scenario-box">
+        <strong>Scenario:</strong> Rajesh Kumar, DRWSD Warangal — assigned the High severity Kothapalli alert. Deploys tankers, engages a borewell contractor, uploads evidence, files a resolution claim, and escalates to State if needed.
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#7C3AED">1</div><div class="phase-title">Register</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/register</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"email"</span><span class="jp">:</span>        <span class="jv">"rajesh.kumar@drwsd-warangal.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"password"</span><span class="jp">:</span>     <span class="jv">"password123"</span><span class="jp">,</span>
+  <span class="jk">"full_name"</span><span class="jp">:</span>    <span class="jv">"Rajesh Kumar"</span><span class="jp">,</span>
+  <span class="jk">"role"</span><span class="jp">:</span>         <span class="jv">"DISTRICT_OFFICER"</span><span class="jp">,</span>
+  <span class="jk">"organization"</span><span class="jp">:</span> <span class="jv">"District Rural Water Supply Department, Warangal"</span><span class="jp">,</span>
+  <span class="jk">"district"</span><span class="jp">:</span>     <span class="jv">"Warangal"</span><span class="jp">,</span>
+  <span class="jk">"state"</span><span class="jp">:</span>        <span class="jv">"Telangana"</span><span class="jp">,</span>
+  <span class="jk">"phone"</span><span class="jp">:</span>        <span class="jv">"+91-9898003456"</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#7C3AED">2</div><div class="phase-title">Authorize / Login</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/token</span><span class="endpoint-note">form-data</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">username</span> <span class="fd-sep">:</span> <span class="fd-val">rajesh.kumar@drwsd-warangal.gov.in</span>
+<span class="fd-key">password</span> <span class="fd-sep">:</span> <span class="fd-val">password123</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#7C3AED">3</div><div class="phase-title">Submit Action — Tanker Dispatch</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/actions</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span>            <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"actor_name"</span><span class="jp">:</span>          <span class="jv">"Rajesh Kumar"</span><span class="jp">,</span>
+  <span class="jk">"actor_organization"</span><span class="jp">:</span>   <span class="jv">"District Rural Water Supply Dept, Warangal"</span><span class="jp">,</span>
+  <span class="jk">"actor_email"</span><span class="jp">:</span>          <span class="jv">"rajesh.kumar@drwsd-warangal.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"action_type"</span><span class="jp">:</span>          <span class="jv">"tanker_dispatch"</span><span class="jp">,</span>
+  <span class="jk">"description"</span><span class="jp">:</span>          <span class="jv">"Deployed 2 water tankers (10,000L each) for daily supply to Kothapalli. Tankers at 7am and 5pm daily. Hydrogeological survey Jan 18 — suitable site for new borewell identified. Contractor engaged, drilling commences in 5 days."</span><span class="jp">,</span>
+  <span class="jk">"resources_deployed"</span><span class="jp">:</span>   <span class="jv">"2 water tankers (10,000L each), 1 survey team, borewell drilling contractor"</span><span class="jp">,</span>
+  <span class="jk">"is_resolution_claim"</span><span class="jp">:</span>  <span class="jb">false</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#7C3AED">4</div><div class="phase-title">Submit Resolution Claim — Borewell Complete</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/actions</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span>            <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"actor_name"</span><span class="jp">:</span>          <span class="jv">"Rajesh Kumar"</span><span class="jp">,</span>
+  <span class="jk">"actor_organization"</span><span class="jp">:</span>   <span class="jv">"District Rural Water Supply Dept, Warangal"</span><span class="jp">,</span>
+  <span class="jk">"actor_email"</span><span class="jp">:</span>          <span class="jv">"rajesh.kumar@drwsd-warangal.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"action_type"</span><span class="jp">:</span>          <span class="jv">"borewell_completion"</span><span class="jp">,</span>
+  <span class="jk">"description"</span><span class="jp">:</span>          <span class="jv">"New borewell operational on Feb 10. Water quality meets BIS 10500 (pH 7.2, TDS 320mg/L, zero bacterial contamination). All 450 households have regular piped water supply."</span><span class="jp">,</span>
+  <span class="jk">"resources_deployed"</span><span class="jp">:</span>   <span class="jv">"1 borewell drilling rig, water quality test kit, piping contractor"</span><span class="jp">,</span>
+  <span class="jk">"is_resolution_claim"</span><span class="jp">:</span>  <span class="jb">true</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#7C3AED">5</div><div class="phase-title">Upload Evidence File</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/evidence</span><span class="endpoint-note">multipart/form-data</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">alert_id</span>         <span class="fd-sep">:</span> <span class="fd-val">PASTE-ALERT-ID-HERE</span>
+<span class="fd-key">file</span>             <span class="fd-sep">:</span> <span class="fd-val">[attach: borewell_completion_photo.jpg]</span>
+<span class="fd-key">evidence_type</span>    <span class="fd-sep">:</span> <span class="fd-val">PHOTO</span>
+<span class="fd-key">description</span>      <span class="fd-sep">:</span> <span class="fd-val">Borewell operational Feb 10. GPS-tagged site photo.</span>
+<span class="fd-key">lat</span>              <span class="fd-sep">:</span> <span class="fd-val">17.9284</span>
+<span class="fd-key">lng</span>              <span class="fd-sep">:</span> <span class="fd-val">79.8945</span></pre>
+          </div>
+          <div class="note note-info"><span class="note-icon">ℹ</span>evidence_type options: <code>PHOTO</code> · <code>DOCUMENT</code> · <code>FIELD_REPORT</code> · <code>WATER_TEST</code> · <code>GPS_COORDINATES</code></div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#7C3AED">6</div><div class="phase-title">Escalate to State (if SLA breached)</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/escalate</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span> <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"to_level"</span><span class="jp">:</span> <span class="jv">"STATE"</span><span class="jp">,</span>
+  <span class="jk">"reason"</span><span class="jp">:</span>   <span class="jv">"District has not resolved within 24-hour SLA. Issue worsening — 2 more borewells failed. Escalating to State Water Board for emergency intervention."</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#7C3AED">7</div><div class="phase-title">View Escalation History</div><span class="phase-method-badge badge-GET">GET</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-GET">GET</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/escalations</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">alert_id</span> <span class="fd-sep">:</span> <span class="fd-val">PASTE-ALERT-ID-HERE</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-div">
+
+  <!-- ════════════════════════════════════════════════════════
+       ROLE 5: STATE OFFICER
+  ════════════════════════════════════════════════════════ -->
+  <div class="role-section" id="state">
+    <div class="role-header" style="background: linear-gradient(135deg, #92400E, #B45309);">
+      <div class="role-emoji">🏛️</div>
+      <div class="role-header-text">
+        <div class="role-header-name">State Water Resources Board Officer <span class="role-header-badge">STATE_OFFICER</span></div>
+        <div class="role-header-desc">Handles Critical severity and State-escalated alerts — coordinates state-level emergency response</div>
+      </div>
+    </div>
+    <div class="role-body">
+      <div class="scenario-box">
+        <strong>Scenario:</strong> Anand Krishnan, Telangana SWRB — receives a Critical alert (820 households, pipe burst) escalated from District. Deploys state tankers and emergency borewell rigs.
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#B45309">1</div><div class="phase-title">Register</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/register</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"email"</span><span class="jp">:</span>        <span class="jv">"anand.krishnan@tswater.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"password"</span><span class="jp">:</span>     <span class="jv">"password123"</span><span class="jp">,</span>
+  <span class="jk">"full_name"</span><span class="jp">:</span>    <span class="jv">"Anand Krishnan"</span><span class="jp">,</span>
+  <span class="jk">"role"</span><span class="jp">:</span>         <span class="jv">"STATE_OFFICER"</span><span class="jp">,</span>
+  <span class="jk">"organization"</span><span class="jp">:</span> <span class="jv">"Telangana State Water Resources Development Corporation"</span><span class="jp">,</span>
+  <span class="jk">"state"</span><span class="jp">:</span>        <span class="jv">"Telangana"</span><span class="jp">,</span>
+  <span class="jk">"phone"</span><span class="jp">:</span>        <span class="jv">"+91-9700004567"</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#B45309">2</div><div class="phase-title">Authorize / Login</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/token</span><span class="endpoint-note">form-data</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">username</span> <span class="fd-sep">:</span> <span class="fd-val">anand.krishnan@tswater.gov.in</span>
+<span class="fd-key">password</span> <span class="fd-sep">:</span> <span class="fd-val">password123</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#B45309">3</div><div class="phase-title">Submit State Emergency Action</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/actions</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span>            <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"actor_name"</span><span class="jp">:</span>          <span class="jv">"Anand Krishnan"</span><span class="jp">,</span>
+  <span class="jk">"actor_organization"</span><span class="jp">:</span>   <span class="jv">"Telangana State Water Resources Development Corporation"</span><span class="jp">,</span>
+  <span class="jk">"actor_email"</span><span class="jp">:</span>          <span class="jv">"anand.krishnan@tswater.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"action_type"</span><span class="jp">:</span>          <span class="jv">"emergency_programme"</span><span class="jp">,</span>
+  <span class="jk">"description"</span><span class="jp">:</span>          <span class="jv">"State Emergency Water Supply Programme activated. 5 TSRTC tankers (20,000L) deployed from Hyderabad. Emergency borewell deepening sanctioned for Warangal district. Rs 45 lakh emergency fund released. Restoration expected within 72 hours."</span><span class="jp">,</span>
+  <span class="jk">"resources_deployed"</span><span class="jp">:</span>   <span class="jv">"5 state water tankers, 3 emergency borewell rigs, NDRF coordination team, Rs 45 lakh fund"</span><span class="jp">,</span>
+  <span class="jk">"is_resolution_claim"</span><span class="jp">:</span>  <span class="jb">false</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#B45309">4</div><div class="phase-title">Submit Resolution Claim</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/actions</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span>            <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"actor_name"</span><span class="jp">:</span>          <span class="jv">"Anand Krishnan"</span><span class="jp">,</span>
+  <span class="jk">"actor_organization"</span><span class="jp">:</span>   <span class="jv">"Telangana State Water Resources Development Corporation"</span><span class="jp">,</span>
+  <span class="jk">"actor_email"</span><span class="jp">:</span>          <span class="jv">"anand.krishnan@tswater.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"action_type"</span><span class="jp">:</span>          <span class="jv">"infrastructure_restoration"</span><span class="jp">,</span>
+  <span class="jk">"description"</span><span class="jp">:</span>          <span class="jv">"3 deepened borewells operational. State water grid connected at Kothapalli. All 800 households confirmed receiving regular supply. TSWD handover to District RWSD completed Feb 25."</span><span class="jp">,</span>
+  <span class="jk">"resources_deployed"</span><span class="jp">:</span>   <span class="jv">"3 borewell deepening rigs, state grid connection, TSWD team"</span><span class="jp">,</span>
+  <span class="jk">"is_resolution_claim"</span><span class="jp">:</span>  <span class="jb">true</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-div">
+
+  <!-- ════════════════════════════════════════════════════════
+       ROLE 6: VALIDATOR
+  ════════════════════════════════════════════════════════ -->
+  <div class="role-section" id="validator">
+    <div class="role-header" style="background: linear-gradient(135deg, #991B1B, #DC2626);">
+      <div class="role-emoji">🔍</div>
+      <div class="role-header-text">
+        <div class="role-header-name">Independent Field Validator <span class="role-header-badge">VALIDATOR</span></div>
+        <div class="role-header-desc">The ONLY role that can close an alert — must submit physical field verification with evidence</div>
+      </div>
+    </div>
+    <div class="role-body">
+      <div class="scenario-box">
+        <strong>Scenario:</strong> Priya Sharma, WaterAid India — visits Kothapalli on Feb 12. Interviews households, inspects new borewell, reviews quality certificate, submits APPROVED validation. Her decision permanently closes the alert.
+      </div>
+      <div class="note note-danger" style="margin-bottom:20px; border-radius:8px;"><span class="note-icon">🔒</span><strong>Critical Rule:</strong> An alert can ONLY reach <code>CLOSED</code> status through a VALIDATOR submitting <code>decision: "APPROVED"</code>. No officer, admin, or system action can bypass this gate.</div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#DC2626">1</div><div class="phase-title">Register</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/register</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"email"</span><span class="jp">:</span>        <span class="jv">"priya.sharma@wateraid.org"</span><span class="jp">,</span>
+  <span class="jk">"password"</span><span class="jp">:</span>     <span class="jv">"password123"</span><span class="jp">,</span>
+  <span class="jk">"full_name"</span><span class="jp">:</span>    <span class="jv">"Priya Sharma"</span><span class="jp">,</span>
+  <span class="jk">"role"</span><span class="jp">:</span>         <span class="jv">"VALIDATOR"</span><span class="jp">,</span>
+  <span class="jk">"organization"</span><span class="jp">:</span> <span class="jv">"WaterAid India - Telangana Chapter"</span><span class="jp">,</span>
+  <span class="jk">"district"</span><span class="jp">:</span>     <span class="jv">"Warangal"</span><span class="jp">,</span>
+  <span class="jk">"state"</span><span class="jp">:</span>        <span class="jv">"Telangana"</span><span class="jp">,</span>
+  <span class="jk">"phone"</span><span class="jp">:</span>        <span class="jv">"+91-9855005678"</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#DC2626">2</div><div class="phase-title">Authorize / Login</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/token</span><span class="endpoint-note">form-data</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">username</span> <span class="fd-sep">:</span> <span class="fd-val">priya.sharma@wateraid.org</span>
+<span class="fd-key">password</span> <span class="fd-sep">:</span> <span class="fd-val">password123</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#DC2626">3</div><div class="phase-title">Submit Validation — APPROVED (Closes Alert)</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/validate</span><span class="endpoint-note">Alert must be in PENDING_VERIFICATION</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span>          <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"validator_name"</span><span class="jp">:</span>    <span class="jv">"Priya Sharma"</span><span class="jp">,</span>
+  <span class="jk">"validator_org"</span><span class="jp">:</span>     <span class="jv">"WaterAid India - Telangana Chapter"</span><span class="jp">,</span>
+  <span class="jk">"method"</span><span class="jp">:</span>            <span class="jv">"Field visit Feb 12. Interviewed 15 households across 3 habitations. Inspected new borewell. Reviewed water quality test certificate."</span><span class="jp">,</span>
+  <span class="jk">"findings"</span><span class="jp">:</span>          <span class="jv">"New borewell operational since Feb 10. Water quality meets BIS 10500 (pH 7.2, TDS 320mg/L, zero bacterial contamination). All 450 households confirm supply restored."</span><span class="jp">,</span>
+  <span class="jk">"evidence_reviewed"</span><span class="jp">:</span> <span class="jv">"Borewell photos (7), water quality certificate TSPCB-2024-0219, contractor completion cert, 15 signed household feedback forms, GPS 17.9284 79.8945"</span><span class="jp">,</span>
+  <span class="jk">"community_feedback"</span><span class="jp">:</span><span class="jv">"Adequate response. Women note improved time savings on water collection. No disputes raised."</span><span class="jp">,</span>
+  <span class="jk">"recommendations"</span><span class="jp">:</span>   <span class="jv">"Monitor groundwater monthly April-June. Consider 2 rainwater harvesting structures."</span><span class="jp">,</span>
+  <span class="jk">"decision"</span><span class="jp">:</span>          <span class="jv">"APPROVED"</span>
+<span class="jp">}</span></pre>
+          </div>
+          <div class="note note-success"><span class="note-icon">✓</span><code>APPROVED</code> → Alert status permanently set to <code>CLOSED</code>. <code>closed_at</code> timestamp sealed. Gemini scores coherence of findings vs resolution claim.</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#DC2626">4</div><div class="phase-title">Submit Validation — DISPUTED (Problem Not Fixed)</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/validate</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span>          <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"validator_name"</span><span class="jp">:</span>    <span class="jv">"Priya Sharma"</span><span class="jp">,</span>
+  <span class="jk">"validator_org"</span><span class="jp">:</span>     <span class="jv">"WaterAid India - Telangana Chapter"</span><span class="jp">,</span>
+  <span class="jk">"method"</span><span class="jp">:</span>            <span class="jv">"Field visit Feb 12. Visited GPS coordinates stated in resolution claim."</span><span class="jp">,</span>
+  <span class="jk">"findings"</span><span class="jp">:</span>          <span class="jv">"No new borewell found at stated GPS location. 8 households interviewed — none report any contractor visit since January. Existing borewell still non-functional. Community collecting water 4km away."</span><span class="jp">,</span>
+  <span class="jk">"evidence_reviewed"</span><span class="jp">:</span> <span class="jv">"Site GPS-tagged photographs, 8 household interview transcripts"</span><span class="jp">,</span>
+  <span class="jk">"community_feedback"</span><span class="jp">:</span><span class="jv">"Community strongly disputes resolution claim. No improvement observed."</span><span class="jp">,</span>
+  <span class="jk">"recommendations"</span><span class="jp">:</span>   <span class="jv">"Immediate re-investigation required. Contractor accountability audit recommended."</span><span class="jp">,</span>
+  <span class="jk">"decision"</span><span class="jp">:</span>          <span class="jv">"DISPUTED"</span>
+<span class="jp">}</span></pre>
+          </div>
+          <div class="note note-warning"><span class="note-icon">⚠</span><code>DISPUTED</code> → Alert status = <code>RESOLUTION_DISPUTED</code>. Alert re-enters active lifecycle. SLA enforcement resumes from the top.</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#DC2626">5</div><div class="phase-title">Submit Validation — INSUFFICIENT_EVIDENCE</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/validate</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span>          <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"validator_name"</span><span class="jp">:</span>    <span class="jv">"Priya Sharma"</span><span class="jp">,</span>
+  <span class="jk">"validator_org"</span><span class="jp">:</span>     <span class="jv">"WaterAid India - Telangana Chapter"</span><span class="jp">,</span>
+  <span class="jk">"method"</span><span class="jp">:</span>            <span class="jv">"Remote document review only — field visit not possible due to flooding."</span><span class="jp">,</span>
+  <span class="jk">"findings"</span><span class="jp">:</span>          <span class="jv">"Completion certificate submitted but no water quality test results, no GPS-tagged photos, and no community feedback forms provided. Cannot independently verify resolution."</span><span class="jp">,</span>
+  <span class="jk">"evidence_reviewed"</span><span class="jp">:</span> <span class="jv">"Completion certificate (unverified) only"</span><span class="jp">,</span>
+  <span class="jk">"recommendations"</span><span class="jp">:</span>   <span class="jv">"Physical site visit required. GPS-tagged photos and accredited lab water quality test needed."</span><span class="jp">,</span>
+  <span class="jk">"decision"</span><span class="jp">:</span>          <span class="jv">"INSUFFICIENT_EVIDENCE"</span>
+<span class="jp">}</span></pre>
+          </div>
+          <div class="note note-info"><span class="note-icon">ℹ</span><code>INSUFFICIENT_EVIDENCE</code> → Alert stays in <code>PENDING_VERIFICATION</code>. Another validation attempt can be submitted after more evidence is gathered.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-div">
+
+  <!-- ════════════════════════════════════════════════════════
+       ROLE 7: NGO
+  ════════════════════════════════════════════════════════ -->
+  <div class="role-section" id="ngo">
+    <div class="role-header" style="background: linear-gradient(135deg, #1E40AF, #1D4ED8);">
+      <div class="role-emoji">🌱</div>
+      <div class="role-header-text">
+        <div class="role-header-name">Community NGO Representative <span class="role-header-badge">NGO</span></div>
+        <div class="role-header-desc">Files alerts on behalf of communities without digital access — can also submit observations and actions</div>
+      </div>
+    </div>
+    <div class="role-body">
+      <div class="scenario-box">
+        <strong>Scenario:</strong> Meena Iyer, Jal Saheli NGO — fieldwork reveals 820 households in Devarakonda with no piped supply for 10 days after a pipe burst. Local Panchayat lacks digital access. Meena files the alert on their behalf.
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#1D4ED8">1</div><div class="phase-title">Register</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/register</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"email"</span><span class="jp">:</span>        <span class="jv">"meena.iyer@jalsaheli.org"</span><span class="jp">,</span>
+  <span class="jk">"password"</span><span class="jp">:</span>     <span class="jv">"password123"</span><span class="jp">,</span>
+  <span class="jk">"full_name"</span><span class="jp">:</span>    <span class="jv">"Meena Iyer"</span><span class="jp">,</span>
+  <span class="jk">"role"</span><span class="jp">:</span>         <span class="jv">"NGO"</span><span class="jp">,</span>
+  <span class="jk">"organization"</span><span class="jp">:</span> <span class="jv">"Jal Saheli Community Water Action Group"</span><span class="jp">,</span>
+  <span class="jk">"district"</span><span class="jp">:</span>     <span class="jv">"Nalgonda"</span><span class="jp">,</span>
+  <span class="jk">"state"</span><span class="jp">:</span>        <span class="jv">"Telangana"</span><span class="jp">,</span>
+  <span class="jk">"phone"</span><span class="jp">:</span>        <span class="jv">"+91-9866006789"</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#1D4ED8">2</div><div class="phase-title">Authorize / Login</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/token</span><span class="endpoint-note">form-data</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">username</span> <span class="fd-sep">:</span> <span class="fd-val">meena.iyer@jalsaheli.org</span>
+<span class="fd-key">password</span> <span class="fd-sep">:</span> <span class="fd-val">password123</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#1D4ED8">3</div><div class="phase-title">Submit Alert on Behalf of Community — Critical</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"panchayat"</span><span class="jp">:</span>           <span class="jv">"Devarakonda"</span><span class="jp">,</span>
+  <span class="jk">"district"</span><span class="jp">:</span>            <span class="jv">"Nalgonda"</span><span class="jp">,</span>
+  <span class="jk">"state"</span><span class="jp">:</span>               <span class="jv">"Telangana"</span><span class="jp">,</span>
+  <span class="jk">"lat"</span><span class="jp">:</span>                 <span class="jn">16.6835</span><span class="jp">,</span>
+  <span class="jk">"lng"</span><span class="jp">:</span>                 <span class="jn">79.2354</span><span class="jp">,</span>
+  <span class="jk">"severity"</span><span class="jp">:</span>            <span class="jv">"Critical"</span><span class="jp">,</span>
+  <span class="jk">"description"</span><span class="jp">:</span>         <span class="jv">"820 households in Devarakonda have had no piped supply for 10 days following a main pipe burst on March 2. Local Panchayat lacks capacity to file digital reports. Women walking 6km daily to the nearest hand pump."</span><span class="jp">,</span>
+  <span class="jk">"households_affected"</span><span class="jp">:</span>  <span class="jn">820</span><span class="jp">,</span>
+  <span class="jk">"water_source_type"</span><span class="jp">:</span>    <span class="jv">"piped_supply"</span><span class="jp">,</span>
+  <span class="jk">"primary_concern"</span><span class="jp">:</span>      <span class="jv">"access"</span><span class="jp">,</span>
+  <span class="jk">"reporter_name"</span><span class="jp">:</span>        <span class="jv">"Meena Iyer (on behalf of Devarakonda Residents Association)"</span><span class="jp">,</span>
+  <span class="jk">"reporter_email"</span><span class="jp">:</span>       <span class="jv">"meena.iyer@jalsaheli.org"</span><span class="jp">,</span>
+  <span class="jk">"reporter_org"</span><span class="jp">:</span>         <span class="jv">"Jal Saheli Community Water Action Group"</span>
+<span class="jp">}</span></pre>
+          </div>
+          <div class="note note-info"><span class="note-icon">ℹ</span>Critical severity + 820 households → ML model assigns to <code>STATE_OFFICER</code> with 6-hour SLA. n8n fires email to State Water Board automatically.</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#1D4ED8">4</div><div class="phase-title">Submit Community Observation (Action)</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/actions</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"alert_id"</span><span class="jp">:</span>            <span class="jv">"PASTE-ALERT-ID-HERE"</span><span class="jp">,</span>
+  <span class="jk">"actor_name"</span><span class="jp">:</span>          <span class="jv">"Meena Iyer"</span><span class="jp">,</span>
+  <span class="jk">"actor_organization"</span><span class="jp">:</span>   <span class="jv">"Jal Saheli Community Water Action Group"</span><span class="jp">,</span>
+  <span class="jk">"actor_email"</span><span class="jp">:</span>          <span class="jv">"meena.iyer@jalsaheli.org"</span><span class="jp">,</span>
+  <span class="jk">"action_type"</span><span class="jp">:</span>          <span class="jv">"community_observation"</span><span class="jp">,</span>
+  <span class="jk">"description"</span><span class="jp">:</span>          <span class="jv">"Follow-up visit March 10. Tanker has been arriving irregularly — missed 3 of 7 days. Community storing water in open vessels raising hygiene concerns. Request more frequent supply schedule."</span><span class="jp">,</span>
+  <span class="jk">"resources_deployed"</span><span class="jp">:</span>   <span class="jv">"NGO field team, community survey forms"</span><span class="jp">,</span>
+  <span class="jk">"is_resolution_claim"</span><span class="jp">:</span>  <span class="jb">false</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-div">
+
+  <!-- ════════════════════════════════════════════════════════
+       ROLE 8: ADMIN
+  ════════════════════════════════════════════════════════ -->
+  <div class="role-section" id="admin">
+    <div class="role-header" style="background: linear-gradient(135deg, #1F2937, #374151);">
+      <div class="role-emoji">⚙️</div>
+      <div class="role-header-text">
+        <div class="role-header-name">Platform Administrator <span class="role-header-badge">ADMIN</span></div>
+        <div class="role-header-desc">Full access — SLA enforcement, dashboard analytics, cross-district oversight, system management</div>
+      </div>
+    </div>
+    <div class="role-body">
+      <div class="scenario-box">
+        <strong>Scenario:</strong> JalSeva admin monitors platform health, triggers SLA checks, views cross-district dashboards, and checks audit trails for any alert in the system.
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#374151">1</div><div class="phase-title">Register</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/register</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jp">{</span>
+  <span class="jk">"email"</span><span class="jp">:</span>        <span class="jv">"admin@jalseva.gov.in"</span><span class="jp">,</span>
+  <span class="jk">"password"</span><span class="jp">:</span>     <span class="jv">"password123"</span><span class="jp">,</span>
+  <span class="jk">"full_name"</span><span class="jp">:</span>    <span class="jv">"JalSeva Platform Administrator"</span><span class="jp">,</span>
+  <span class="jk">"role"</span><span class="jp">:</span>         <span class="jv">"ADMIN"</span><span class="jp">,</span>
+  <span class="jk">"organization"</span><span class="jp">:</span> <span class="jv">"JalSeva Governance Platform"</span><span class="jp">,</span>
+  <span class="jk">"state"</span><span class="jp">:</span>        <span class="jv">"Telangana"</span><span class="jp">,</span>
+  <span class="jk">"phone"</span><span class="jp">:</span>        <span class="jv">"+91-9700007890"</span>
+<span class="jp">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#374151">2</div><div class="phase-title">Authorize / Login</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/auth/token</span><span class="endpoint-note">form-data</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">username</span> <span class="fd-sep">:</span> <span class="fd-val">admin@jalseva.gov.in</span>
+<span class="fd-key">password</span> <span class="fd-sep">:</span> <span class="fd-val">password123</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#374151">3</div><div class="phase-title">Trigger Manual SLA Breach Check</div><span class="phase-method-badge badge-POST">POST</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-POST">POST</span><span class="endpoint-path">/api/v1/alerts/admin/check-sla</span><span class="endpoint-note">ADMIN role only</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jc"># No request body required.</span>
+<span class="jc"># Scans all open alerts past their SLA deadline.</span>
+<span class="jc"># Auto-escalates each to the next authority tier.</span>
+<span class="jc"># Fires the correct n8n escalation webhooks.</span>
+<span class="jc"># Normally runs automatically via Celery every hour.</span></pre>
+          </div>
+          <div class="note note-info"><span class="note-icon">ℹ</span>Use this during testing to trigger escalations immediately without waiting for the hourly Celery task.</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#374151">4</div><div class="phase-title">View Dashboard Statistics</div><span class="phase-method-badge badge-GET">GET</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-GET">GET</span><span class="endpoint-path">/api/v1/alerts/dashboard/stats</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jc"># No body or params required.</span>
+<span class="jc"># Returns: total_alerts, open_alerts, closed_alerts,</span>
+<span class="jc">#          pending_verification, sla_breached,</span>
+<span class="jc">#          by_severity, by_status, by_escalation_level,</span>
+<span class="jc">#          avg_resolution_hours, alerts_closed_with_evidence</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#374151">5</div><div class="phase-title">View Any Alert Timeline</div><span class="phase-method-badge badge-GET">GET</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-GET">GET</span><span class="endpoint-path">/api/v1/alerts/{alert_id}/timeline</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="fd-key">alert_id</span> <span class="fd-sep">:</span> <span class="fd-val">PASTE-ANY-ALERT-ID-HERE</span>   <span class="jc"># Admin can view any alert in the system</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-header"><div class="phase-number" style="background:#374151">6</div><div class="phase-title">Check My Profile</div><span class="phase-method-badge badge-GET">GET</span></div>
+        <div class="phase-body">
+          <div class="endpoint-row"><span class="endpoint-method method-GET">GET</span><span class="endpoint-path">/api/v1/auth/me</span></div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="jc"># No body — uses Authorization header token automatically.</span>
+<span class="jc"># Returns: id, email, full_name, role, organization, created_at</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-div">
+
+  <!-- ════════════════════════════════════════════════════════
+       QUICK REFERENCE TABLE
+  ════════════════════════════════════════════════════════ -->
+  <div class="role-section" id="quickref">
+    <h2 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px;">All Endpoints — Quick Reference</h2>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:24px;">Base URL: <code style="font-family:var(--mono);background:#F1F5F9;padding:2px 6px;border-radius:4px;">http://127.0.0.1:8000</code> &nbsp;·&nbsp; Swagger UI: <code style="font-family:var(--mono);background:#F1F5F9;padding:2px 6px;border-radius:4px;">http://127.0.0.1:8000/docs</code></p>
+    <table class="quick-ref">
+      <thead>
+        <tr>
+          <th style="width:70px">Method</th>
+          <th style="width:310px">Endpoint</th>
+          <th style="width:200px">Roles</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="qm badge-POST">POST</span></td><td class="qpath">/api/v1/auth/register</td><td class="qroles">All</td><td class="qdesc">Register new user</td></tr>
+        <tr><td><span class="qm badge-POST">POST</span></td><td class="qpath">/api/v1/auth/token</td><td class="qroles">All</td><td class="qdesc">Login — returns JWT access_token (form-data)</td></tr>
+        <tr><td><span class="qm badge-GET">GET</span></td><td class="qpath">/api/v1/auth/me</td><td class="qroles">All</td><td class="qdesc">Get logged-in user profile</td></tr>
+        <tr><td><span class="qm badge-POST">POST</span></td><td class="qpath">/api/v1/alerts/</td><td class="qroles">PANCHAYAT, NGO, Any</td><td class="qdesc">Submit new water scarcity alert</td></tr>
+        <tr><td><span class="qm badge-GET">GET</span></td><td class="qpath">/api/v1/alerts/</td><td class="qroles">All</td><td class="qdesc">List alerts — filter by district, severity, status</td></tr>
+        <tr><td><span class="qm badge-GET">GET</span></td><td class="qpath">/api/v1/alerts/{alert_id}</td><td class="qroles">All</td><td class="qdesc">Get single alert detail</td></tr>
+        <tr><td><span class="qm badge-POST">POST</span></td><td class="qpath">/api/v1/alerts/{alert_id}/actions</td><td class="qroles">Officers, NGO</td><td class="qdesc">Submit action or resolution claim</td></tr>
+        <tr><td><span class="qm badge-POST">POST</span></td><td class="qpath">/api/v1/alerts/{alert_id}/validate</td><td class="qroles">VALIDATOR, NGO, ADMIN</td><td class="qdesc">Submit independent validation (APPROVED closes alert)</td></tr>
+        <tr><td><span class="qm badge-POST">POST</span></td><td class="qpath">/api/v1/alerts/{alert_id}/escalate</td><td class="qroles">Officers, ADMIN</td><td class="qdesc">Manually escalate to higher authority tier</td></tr>
+        <tr><td><span class="qm badge-POST">POST</span></td><td class="qpath">/api/v1/alerts/{alert_id}/evidence</td><td class="qroles">Any</td><td class="qdesc">Upload evidence file — photo, PDF, GPS cert (multipart)</td></tr>
+        <tr><td><span class="qm badge-GET">GET</span></td><td class="qpath">/api/v1/alerts/{alert_id}/timeline</td><td class="qroles">All</td><td class="qdesc">Full immutable audit trail — all state changes</td></tr>
+        <tr><td><span class="qm badge-GET">GET</span></td><td class="qpath">/api/v1/alerts/{alert_id}/escalations</td><td class="qroles">All</td><td class="qdesc">All escalation events for this alert</td></tr>
+        <tr><td><span class="qm badge-GET">GET</span></td><td class="qpath">/api/v1/alerts/dashboard/stats</td><td class="qroles">All</td><td class="qdesc">Governance performance dashboard — totals, averages</td></tr>
+        <tr><td><span class="qm badge-POST">POST</span></td><td class="qpath">/api/v1/alerts/admin/check-sla</td><td class="qroles">ADMIN only</td><td class="qdesc">Manual SLA breach check + auto-escalation trigger</td></tr>
+        <tr><td><span class="qm badge-GET">GET</span></td><td class="qpath">/health</td><td class="qroles">Any</td><td class="qdesc">Health check — returns {"status":"ok"}</td></tr>
+        <tr><td><span class="qm badge-GET">GET</span></td><td class="qpath">/metrics</td><td class="qroles">Any</td><td class="qdesc">Prometheus metrics endpoint</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-banner" style="margin-top:0">
+      <strong>Validation decisions:</strong> &nbsp;<code>APPROVED</code> → Alert CLOSED &nbsp;|&nbsp; <code>DISPUTED</code> → Alert RESOLUTION_DISPUTED, re-enters lifecycle &nbsp;|&nbsp; <code>INSUFFICIENT_EVIDENCE</code> → Alert stays PENDING_VERIFICATION<br>
+      <strong>is_resolution_claim:</strong> &nbsp;<code>false</code> → ACTION_SUBMITTED (stays open) &nbsp;|&nbsp; <code>true</code> → PENDING_VERIFICATION (awaits validator)<br>
+      <strong>to_level options:</strong> &nbsp;<code>BLOCK</code> · <code>MANDAL</code> · <code>DISTRICT</code> · <code>STATE</code>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// Copy button logic
+function copyCode(btn) {
+  const pre = btn.parentElement.querySelector('pre');
+  const text = pre ? pre.innerText : '';
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// Sidebar active tracking
+const sections = document.querySelectorAll('.role-section');
+const navItems = document.querySelectorAll('.sidebar-item');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const id = e.target.id;
+      const active = document.querySelector(`.sidebar-item[href="#${id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
