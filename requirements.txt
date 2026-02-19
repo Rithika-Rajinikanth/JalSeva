@@ -1,0 +1,67 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# JalSeva Requirements
+# Install with:  pip install -r requirements.txt
+#
+# IMPORTANT: Run inside a virtual environment
+#   python -m venv venv
+#   venv\Scripts\activate        (Windows)
+#   source venv/bin/activate     (Mac/Linux)
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Core ─────────────────────────────────────────────────────────────────────
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-dotenv==1.0.1
+pydantic==2.8.2
+pydantic-settings==2.4.0
+
+# ── Database ──────────────────────────────────────────────────────────────────
+sqlalchemy==2.0.35
+alembic==1.13.3
+psycopg2-binary==2.9.9
+
+# ── Auth ──────────────────────────────────────────────────────────────────────
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+python-multipart==0.0.9
+
+# ── AI / LangChain ───────────────────────────────────────────────────────────
+# FIX: langchain-google-genai 2.0.0 requires google-generativeai>=0.7.0,<0.8.0
+#      So we pin google-generativeai to 0.7.2 (latest compatible)
+langchain-core==0.3.0
+langchain-google-genai==2.0.0
+google-generativeai==0.7.2
+langgraph==0.2.28
+
+# ── ML ────────────────────────────────────────────────────────────────────────
+scikit-learn==1.5.2
+joblib==1.4.2
+numpy==1.26.4
+pandas==2.2.2
+
+# ── NLI Contradiction Detection (optional — safe to skip) ────────────────────
+# These are large downloads (~2GB). Remove these two lines if installation is
+# slow or fails — the system works fully without contradiction detection.
+transformers==4.44.2
+torch==2.4.1
+
+# ── File handling ─────────────────────────────────────────────────────────────
+Pillow==10.4.0
+aiofiles==24.1.0
+
+# ── HTTP client (n8n webhooks) ────────────────────────────────────────────────
+httpx==0.27.2
+
+# ── Background tasks (optional — only needed for Celery SLA worker) ───────────
+# Remove celery and redis if you don't need background SLA enforcement.
+celery==5.4.0
+redis==5.0.8
+
+# ── Monitoring ────────────────────────────────────────────────────────────────
+structlog==24.4.0
+prometheus-fastapi-instrumentator==7.0.0
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest==8.3.3
+pytest-asyncio==0.24.0

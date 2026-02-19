@@ -1,0 +1,6 @@
+latitude,longitude,rainfall_mm,groundwater_level,reservoir_percent,water_scarcity
+21.5,74.8,100,40,72,0
+22.2,75.9,75,35,60,1
+20.5,76.1,140,55,85,0
+23.1,74.7,90,45,68,0
+21.8,75.0,105,50,73,1

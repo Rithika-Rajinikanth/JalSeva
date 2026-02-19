@@ -1,0 +1,83 @@
+version: "3.9"
+
+services:
+  # ─── PostgreSQL ────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: jalseva
+      POSTGRES_PASSWORD: jalseva_secret
+      POSTGRES_DB: jalseva
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jalseva"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis (Celery broker) ─────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── JalSeva API ──────────────────────────────────────────────────────────
+  api:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      DATABASE_URL: postgresql://jalseva:jalseva_secret@db:5432/jalseva
+      REDIS_URL: redis://redis:6379/0
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      N8N_ALERT_WEBHOOK: ${N8N_ALERT_WEBHOOK:-}
+      N8N_ACTION_WEBHOOK: ${N8N_ACTION_WEBHOOK:-}
+      WATER_GOVERNANCE_MODEL_PATH: /app/pure_path/water_governance_model.pkl
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - uploads_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ─── Celery Worker (SLA enforcement) ──────────────────────────────────────
+  worker:
+    build: .
+    command: celery -A app.core.tasks.celery_app worker --loglevel=info
+    environment:
+      DATABASE_URL: postgresql://jalseva:jalseva_secret@db:5432/jalseva
+      REDIS_URL: redis://redis:6379/0
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+
+  # ─── Celery Beat (scheduled tasks) ────────────────────────────────────────
+  beat:
+    build: .
+    command: celery -A app.core.tasks.celery_app beat --loglevel=info
+    environment:
+      DATABASE_URL: postgresql://jalseva:jalseva_secret@db:5432/jalseva
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+
+volumes:
+  postgres_data:
+  uploads_data:
