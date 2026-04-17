@@ -1,93 +1,195 @@
-# 💧 JalSeva — Water Governance Accountability Platform
+# 💧 JalSeva — Smart Water Service Management
 
-A production-grade, AI-powered water scarcity governance system for India's Panchayati Raj institutions.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Django%20/%20Flask-092E20?style=for-the-badge&logo=django&logoColor=white" />
+  <img src="https://img.shields.io/badge/IoT-Smart%20Water-00B4D8?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge" />
+</p>
 
-**JalSeva** ensures that water-risk alerts move from identification to verified resolution — not just reported, but owned, acted upon, and closed only after credible evidence is recorded.
+> **JalSeva** ("Jal" = Water in Hindi/Tamil) is a smart, digital platform designed to simplify water service management — enabling citizens to report water issues, track complaints, and help authorities manage water distribution efficiently.
 
-## Architecture Inspiration
+---
 
-This system synthesizes patterns from three proven governance platforms:
+## 📖 Table of Contents
 
-| Platform | Pattern Borrowed |
-|----------|-----------------|
-| [Ushahidi](https://github.com/ushahidi) | Alert intake, contradictory evidence handling, verification workflows |
-| [FixMyStreet](https://github.com/mysociety/fixmystreet) | Closure requires evidence, ownership transparency |
-| [Sahana Eden](https://github.com/sahana/eden) | Multi-tier authority coordination, responsibility assignment |
-| [mWater](https://github.com/mWater) | Field validation, photo evidence, audit trails |
-| [Akvo RSR](https://github.com/akvo/akvo-rsr) | Who claimed to act, what evidence exists, outcome validation |
+- [About the Project](#about-the-project)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [How It Works](#how-it-works)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Use Cases](#use-cases)
+- [Contributing](#contributing)
+- [License](#license)
 
-## System Overview
+---
+
+## 📌 About the Project
+
+Access to clean water is a fundamental right, yet many communities face issues like **water leakage, irregular supply, contamination, and poor infrastructure**. JalSeva is a **citizen-centric water service platform** that bridges the gap between the public and water management authorities.
+
+Citizens can raise complaints, track resolution status, and get real-time updates — while administrators get a powerful dashboard to manage water services, allocate resources, and prioritize issues effectively.
+
+---
+
+## ✨ Key Features
+
+| Feature | Description |
+|---|---|
+| 🚨 Complaint Registration | Citizens can report water issues (leakage, no supply, contamination) |
+| 📍 Location-Based Reporting | Issues tagged with GPS coordinates for precise location |
+| 📊 Admin Dashboard | Authorities can view, manage, and resolve complaints |
+| 🔔 Real-Time Status Updates | Users get notified when their complaint status changes |
+| 🗺️ Area-Wise Tracking | View all complaints mapped by locality or ward |
+| 📈 Analytics & Reports | Data-driven insights on issue frequency and resolution time |
+| 👥 Multi-Role System | Separate portals for citizens, field workers, and admins |
+| 📱 Mobile-Friendly UI | Responsive design accessible from any device |
+
+---
+
+## 🛠️ Tech Stack
+
+- **Language:** Python 3.x
+- **Backend:** Django / Flask
+- **Frontend:** HTML, CSS, JavaScript / Bootstrap
+- **Database:** MySQL / PostgreSQL / SQLite
+- **Maps Integration:** Google Maps API / Leaflet.js
+- **Authentication:** JWT / Session-based login
+- **Notifications:** Email / SMS Alerts
+
+---
+
+## ⚙️ How It Works
 
 ```
-Alert Submission (Panchayat / NGO / Citizen)
-        │
-        ▼
-   [Intake Node] → Auto-ID generation, metadata enrichment
-        │
-        ▼
-   [ML Risk Scorer] ← water_governance_model.pkl (pure_path)
-        │
-        ▼
-   [LLM Validation] ← Gemini 2.5 Flash — evidence coherence analysis
-        │
-        ▼
-   [Routing Node] → Assign: Block / Mandal / District / State officer
-        │
-        ▼
-   [Action Node or Escalation Node]
-        │
-        ▼
-   [Independent Verification] ← NGO / Student volunteer / Audit
-        │
-        ▼
-   [Closure Gate] ← Closed ONLY after verified evidence
+Citizen Logs In
+        ↓
+Reports a Water Issue (Location + Description + Photo)
+        ↓
+Complaint Stored in Database
+        ↓
+Admin Reviews & Assigns to Field Worker
+        ↓
+Field Worker Resolves Issue
+        ↓
+Citizen Gets Notified (Status: Resolved ✅)
+        ↓
+Feedback / Rating Submitted
 ```
 
-## Key Features
+### User Roles
 
-- **Alert lifecycle management** — every alert has an owner, SLA, and cannot close without evidence
-- **Multi-tier escalation** — Panchayat → Block → District → State with automatic SLA enforcement
-- **LLM-powered validation** — Gemini analyzes evidence coherence and flags contradictions
-- **ML risk scoring** — pre-trained water stress model predicts severity before human review
-- **Evidence vault** — all documents, photos, and reports linked immutably to each alert
-- **Contradiction detection** — NLI-based model flags conflicting resolution claims
-- **Audit trail** — every state transition is logged with timestamp and actor
-- **n8n workflow integration** — external notification and escalation automation
-- **Role-based access** — Panchayat, District, State, NGO, Validator, Admin roles
+| Role | Capabilities |
+|---|---|
+| 🧑 Citizen | Register, report complaints, track status, submit feedback |
+| 🔧 Field Worker | View assigned tasks, update resolution status |
+| 👨‍💼 Admin | Manage all complaints, assign workers, view analytics dashboard |
 
-## Stack
+---
 
-- **Backend**: FastAPI + SQLAlchemy + PostgreSQL
-- **AI/ML**: LangGraph + Google Gemini + scikit-learn (water_governance_model.pkl)
-- **NLI**: facebook/bart-large-mnli (contradiction detection)
-- **Automation**: n8n webhook integration
-- **Auth**: JWT with role-based permissions
-- **Async**: background tasks for ML inference and notifications
+## 🚀 Getting Started
 
-## Quick Start
+### Prerequisites
+
+- Python 3.8 or above
+- pip package manager
+- MySQL / PostgreSQL (or SQLite for local dev)
+
+### Installation
 
 ```bash
-# 1. Clone and install
+# Clone the repository
+git clone https://github.com/Rithika-Rajinikanth/JalSeva.git
+
+# Navigate into the project
+cd JalSeva
+
+# Create a virtual environment
+python -m venv venv
+source venv/bin/activate      # On Windows: venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
-
-# 2. Set environment variables
-cp config/.env.example config/.env
-# Edit config/.env with your DATABASE_URL and GEMINI_API_KEY
-
-# 3. Initialize database
-python -m app.core.init_db
-
-# 4. Run
-uvicorn app.main:app --reload --port 8000
-
-# 5. API Docs
-open http://localhost:8000/docs
 ```
 
-## Governance Principles
+### Database Setup
 
-1. **No unowned alerts** — every alert is assigned within SLA or auto-escalated
-2. **Evidence-gated closure** — `CLOSED` status requires validator-approved evidence
-3. **Contradiction flagging** — AI detects when resolution claims conflict with field reports
-4. **Immutable audit trail** — all transitions are append-only and actor-stamped
-5. **SLA enforcement** — automatic escalation when deadlines are breached
+```bash
+# Apply migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Create a superuser (Admin)
+python manage.py createsuperuser
+```
+
+### Run the Application
+
+```bash
+python manage.py runserver
+```
+
+Open [http://localhost:8000](http://localhost:8000) in your browser.
+
+Admin panel available at: [http://localhost:8000/admin](http://localhost:8000/admin)
+
+---
+
+## 📁 Project Structure
+
+```
+JalSeva/
+├── jalseva/                    # Main Django project settings
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── complaints/                 # Complaint management app
+│   ├── models.py               # Complaint data models
+│   ├── views.py                # Logic for complaint CRUD
+│   └── urls.py
+├── users/                      # User authentication & roles
+│   ├── models.py
+│   └── views.py
+├── dashboard/                  # Admin analytics dashboard
+├── templates/                  # HTML templates
+├── static/                     # CSS, JS, Images
+├── manage.py
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## 🌍 Use Cases
+
+- **Municipal Corporations** managing large water distribution networks
+- **Rural Panchayats** tracking water supply complaints in villages
+- **Housing Societies** managing water issues internally
+- **Smart City Initiatives** digitizing water service delivery
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository
+2. Create a new branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m "Add your feature"`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<p align="center">
+  💧 <em>Clean water is not a privilege — it's a right. JalSeva makes sure everyone has a voice.</em> 💧
+  <br/><br/>
+  Made with ❤️ by <a href="https://github.com/Rithika-Rajinikanth">Rithika Rajinikanth</a>
+</p>
